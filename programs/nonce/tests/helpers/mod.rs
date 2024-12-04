@@ -48,7 +48,7 @@ pub fn initialize(
     unlock_price: Option<u64>,
 ) -> Instruction {
     let (savings_account, _) = Pubkey::find_program_address(
-        &[name.as_bytes(), signer.as_ref(), description.as_bytes()],
+        &[b"savings", signer.as_ref()],
         &program_id,
     );
     let (protocol_account, _) = Pubkey::find_program_address(&[b"protocol", signer.as_ref()], &program_id);

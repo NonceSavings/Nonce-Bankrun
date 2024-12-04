@@ -11,7 +11,7 @@ pub struct ProtocolState {
 }
 
 #[account]
-#[derive(InitSpace)]
+#[derive(InitSpace,Debug)]
 pub struct SavingsAccount {
     #[max_len(20)]
     pub name: String,
@@ -28,7 +28,7 @@ pub struct SavingsAccount {
     pub unlock_price: u64,
 }
 
-#[derive(AnchorDeserialize, AnchorSerialize, PartialEq, Eq, Clone, InitSpace)]
+#[derive(AnchorDeserialize, AnchorSerialize, PartialEq, Eq, Clone, InitSpace,Debug)]
 pub enum SavingsType {
     TimeLockedSavings,
     PriceLockedSavings,

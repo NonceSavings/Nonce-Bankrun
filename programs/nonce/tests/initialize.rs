@@ -2,7 +2,10 @@ mod helpers;
 use {
     anchor_lang::AccountDeserialize,
     helpers::{utils::*, *},
-    nonce::{self, state::SavingsType},
+    nonce::{
+        self,
+        state::{SavingsAccount, SavingsType},
+    },
     rand::Rng,
     solana_program_test::*,
     solana_sdk::{
@@ -55,4 +58,21 @@ async fn test_initialize() {
     );
     transaction.sign(&[&payer, &maker], recent_blockhash);
     banks_client.process_transaction(transaction).await.unwrap();
+
+    let (savings_pubkey, _) = Pubkey::find_program_address(
+        &[b"savings", maker.pubkey().as_ref()],
+        &nonce::id()
+    );
+
+    let savings = banks_client
+        .get_account(savings_pubkey)
+        .await
+        .unwrap()
+        .unwrap();
+
+    let mut account_data = savings.data.as_ref();
+    let savings_account = SavingsAccount::try_deserialize(&mut account_data).unwrap();
+    println!("{:?}",savings_account);
+
+    assert_eq!(savings_account.is_sol,true);
 }

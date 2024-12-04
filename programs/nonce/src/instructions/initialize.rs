@@ -23,7 +23,7 @@ pub struct InitializeSavings<'info> {
     pub protocol_account: Account<'info, ProtocolState>,
     #[account(
         init,
-        seeds=[name.as_bytes(),signer.key().as_ref(),description.as_bytes()],
+        seeds=[b"savings",signer.key().as_ref()],
         bump,
         payer=signer,
         space=DISCRIMINATOR + SavingsAccount::INIT_SPACE
