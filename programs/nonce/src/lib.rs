@@ -1,7 +1,7 @@
 mod constants;
 mod errors;
-mod instructions;
-mod state;
+pub mod instructions;
+pub mod state;
 use anchor_lang::prelude::*;
 use instructions::*;
 use state::*;
@@ -72,6 +72,3 @@ pub mod nonce {
         Ok(())
     }
 }
-
-#[derive(Accounts)]
-pub struct Initialize {}

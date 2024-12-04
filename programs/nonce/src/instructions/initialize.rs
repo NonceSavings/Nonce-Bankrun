@@ -15,7 +15,7 @@ pub struct InitializeSavings<'info> {
     pub mint: InterfaceAccount<'info, Mint>,
     #[account(
         init_if_needed,
-        seeds=[b"protocol"],
+        seeds=[b"protocol",signer.key().as_ref()],
         payer=signer,
         space=DISCRIMINATOR + ProtocolState::INIT_SPACE,
         bump
