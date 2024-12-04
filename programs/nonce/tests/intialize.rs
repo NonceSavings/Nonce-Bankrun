@@ -2,7 +2,7 @@ mod helpers;
 use {
     anchor_lang::AccountDeserialize,
     helpers::{utils::*, *},
-    nonce,
+    nonce::{self, state::SavingsType},
     rand::Rng,
     solana_program_test::*,
     solana_sdk::{
@@ -19,7 +19,7 @@ async fn test_initialize() {
     test.set_compute_max_units(100_000);
 
     let maker = Keypair::new();
-    let seed :u64= rand::thread_rng().gen();
+    let seed: u64 = rand::thread_rng().gen();
 
     let (mut banks_client, payer, recent_blockhash) = test.start().await;
 
@@ -30,4 +30,29 @@ async fn test_initialize() {
         2 * LAMPORTS_PER_SOL,
     )
     .await;
+
+    let mint = create_mint(&mut banks_client, &payer, None).await.unwrap();
+
+    let _ =
+        create_and_mint_to_token_account(&mut banks_client, mint, &payer, maker.pubkey(), 100_000)
+            .await;
+
+    let mut transaction = Transaction::new_with_payer(
+        &[initialize(
+            nonce::id(),
+            spl_token::id(),
+            maker.pubkey(),
+            mint,
+            "Yearly SavingsAccount".to_string(),
+            "Yearly Savings Noni".to_string(),
+            270,
+            true,
+            SavingsType::PriceLockedSavings,
+            None,
+            Some(1000),
+        )],
+        Some(&payer.pubkey()),
+    );
+    transaction.sign(&[&payer, &maker], recent_blockhash);
+    banks_client.process_transaction(transaction).await.unwrap();
 }
